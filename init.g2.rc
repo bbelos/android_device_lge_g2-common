@@ -41,8 +41,6 @@ on init
     mkdir /sns/cal 0771 system system
 
 on fs
-    mount_all ./fstab.g2
-
     start losetup_system
     wait /sys/devices/virtual/block/loop2/loop/backing_file
     start losetup_data
@@ -52,6 +50,8 @@ on fs
     mount ext4 /dev/block/loop2 /system ro barrier=1
     mount ext4 /dev/block/loop3 /data nosuid nodev barrier=1 noauto_da_alloc
     mount ext4 /dev/block/loop4 /cache nosuid nodev barrier=1 noauto_da_alloc
+
+    mount_all ./fstab.g2
 
     mkdir /data/media 0771 system system
     mount --bind /internalmmc/media /data/media
