@@ -26,6 +26,7 @@ PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 
 
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/update-binary:root/sbin/update-binary \
     $(LOCAL_PATH)/init.g2.rc:root/init.g2.rc \
     $(LOCAL_PATH)/init.g2.usb.rc:root/init.g2.usb.rc \
     $(LOCAL_PATH)/ueventd.g2.rc:root/ueventd.g2.rc \
