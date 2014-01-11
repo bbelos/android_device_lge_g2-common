@@ -41,7 +41,20 @@ on init
     mkdir /sns/cal 0771 system system
 
 on fs
+    mount ext4 /dev/block/platform/msm_sdcc.1/by-name/userdata /internalmmc nosuid nodev noatime barrier=1 discard,noauto_da_alloc,journal_async_commit
+    start losetup_system
+    wait /sys/devices/virtual/block/loop2/loop/backing_file
+    start losetup_data
+    wait /sys/devices/virtual/block/loop3/loop/backing_file
+    start losetup_cache
+    wait /sys/devices/virtual/block/loop4/loop/backing_file
+    mount ext4 /dev/block/loop2 /system ro barrier=1
+    mount ext4 /dev/block/loop3 /data nosuid nodev barrier=1 noauto_da_alloc
+    mount ext4 /dev/block/loop4 /cache nosuid nodev barrier=1 noauto_da_alloc
+
     mount_all ./fstab.g2
+    mkdir /data/media 0771 system system
+    mount --bind /internalmmc/media /data/media
     write /sys/kernel/boot_adsp/boot 1
     setprop ro.crypto.fuse_sdcard true
 
@@ -433,6 +446,21 @@ service time_daemon /system/bin/time_daemon
 service fuse_usb /system/bin/sdcard -u 1023 -g 1023 /mnt/media_rw/usb /storage/usb
     class late_start
     disabled
+
+service losetup_system /sbin/busybox losetup /dev/block/loop2 /internalmmc/media/0/multiboot/CM11/system.ext4.img
+        user root
+        disabled
+        oneshot
+
+service losetup_data /sbin/busybox losetup /dev/block/loop3 /internalmmc/media/0/multiboot/CM11/data.ext4.img
+        user root
+        disabled
+        oneshot
+
+service losetup_cache /sbin/busybox losetup /dev/block/loop4 /internalmmc/media/0/multiboot/CM11/cache.ext4.img
+        user root
+        disabled
+        oneshot
 
 ## Power profiles (CM QS tile)
 ## restarting thermal-engine will kill the system :/
