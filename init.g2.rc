@@ -41,7 +41,8 @@ on init
     mkdir /sns/cal 0771 system system
 
 on fs
-    mount ext4 /dev/block/platform/msm_sdcc.1/by-name/userdata /internalmmc nosuid nodev noatime barrier=1 discard,noauto_da_alloc,journal_async_commit
+    mount_all ./fstab.g2
+
     start losetup_system
     wait /sys/devices/virtual/block/loop2/loop/backing_file
     start losetup_data
@@ -52,9 +53,9 @@ on fs
     mount ext4 /dev/block/loop3 /data nosuid nodev barrier=1 noauto_da_alloc
     mount ext4 /dev/block/loop4 /cache nosuid nodev barrier=1 noauto_da_alloc
 
-    mount_all ./fstab.g2
     mkdir /data/media 0771 system system
     mount --bind /internalmmc/media /data/media
+
     write /sys/kernel/boot_adsp/boot 1
     setprop ro.crypto.fuse_sdcard true
 
