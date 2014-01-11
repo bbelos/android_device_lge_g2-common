@@ -69,18 +69,18 @@ int main(int argc, char **argv)
 	char prop[256], outfile[1024], buf[4096];
 
 	if (argc != 3) {
-		printf("[+] Usage: %s [boot|recovery] [in.lok]\n", argv[0]);
+		printf("[+] Usage: %s [spare|recovery] [in.lok]\n", argv[0]);
 		return 1;
 	}
 
 	printf("[+] loki_flash v%s\n", VERSION);
 
-	if (!strcmp(argv[1], "boot")) {
+	if (!strcmp(argv[1], "spare")) {
 		recovery = 0;
 	} else if (!strcmp(argv[1], "recovery")) {
 		recovery = 1;
 	} else {
-		printf("[+] First argument must be \"boot\" or \"recovery\".\n");
+		printf("[+] First argument must be \"spare\" or \"recovery\".\n");
 		return 1;
 	}
 
@@ -168,7 +168,7 @@ int main(int argc, char **argv)
 
 	snprintf(outfile, sizeof(outfile),
 			 "/dev/block/platform/msm_sdcc.1/by-name/%s",
-			 recovery ? "recovery" : "boot");
+			 recovery ? "recovery" : "spare");
 
 	ofd = open(outfile, O_WRONLY);
 	if (ofd < 0) {
