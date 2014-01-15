@@ -41,6 +41,17 @@ $(INSTALLED_DTIMAGE_TARGET): $(DTBTOOL) $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/u
 	$(hide) $(DTBTOOL) -o $(INSTALLED_DTIMAGE_TARGET) -s $(BOARD_KERNEL_PAGESIZE) -p $(KERNEL_OUT)/scripts/dtc/ $(KERNEL_OUT)/arch/arm/boot/
 	@echo -e ${CL_CYN}"Made DT image: $@"${CL_RST}
 
+# Now let's do recovery symlinks
+BUSYBOX_LINKS := cat cp dmesg du find free grep less ls mount ps rm sh
+DUAL_BUSYBOX_SYMLINKS := $(addprefix $(PRODUCT_OUT)/root/sbin/,$(BUSYBOX_LINKS))
+$(DUAL_BUSYBOX_SYMLINKS): BUSYBOX_BINARY := busybox
+$(DUAL_BUSYBOX_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
+	@echo "Symlink: $@ -> $(BUSYBOX_BINARY)"
+	@mkdir -p $(dir $@)
+	@rm -rf $@
+	$(hide) ln -sf $(BUSYBOX_BINARY) $@
+
+$(INTERNAL_BOOTIMAGE_FILES): $(DUAL_BUSYBOX_SYMLINKS)
 
 ## Overload bootimg generation: Same as the original, + --dt arg
 $(INSTALLED_BOOTIMAGE_TARGET): $(MKBOOTIMG) $(INTERNAL_BOOTIMAGE_FILES) $(INSTALLED_DTIMAGE_TARGET)
