@@ -55,7 +55,6 @@ on fs
     mount_all ./fstab.g2
 
     mount ext4 /dev/block/loop3 /data nosuid nodev barrier=1 noauto_da_alloc
-    mount ext4 /dev/block/loop4 /cache nosuid nodev barrier=1 noauto_da_alloc
 
     write /sys/kernel/boot_adsp/boot 1
     setprop ro.crypto.fuse_sdcard true
