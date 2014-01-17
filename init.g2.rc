@@ -44,15 +44,16 @@ on init
     mkdir /sns/cal 0771 system system
 
 on fs
-    mount_all ./fstab.g2
-
+    mount ext4 /dev/block/platform/msm_sdcc.1/by-name/userdata /internalmmc nosuid nodev noatime barrier=1 discard,noauto_da_alloc,journal_async_commit
     start losetup_system
     wait /sys/devices/virtual/block/loop2/loop/backing_file
     start losetup_data
     wait /sys/devices/virtual/block/loop3/loop/backing_file
     start losetup_cache
     wait /sys/devices/virtual/block/loop4/loop/backing_file
-    mount ext4 /dev/block/loop2 /system ro barrier=1
+
+    mount_all ./fstab.g2
+
     mount ext4 /dev/block/loop3 /data nosuid nodev barrier=1 noauto_da_alloc
     mount ext4 /dev/block/loop4 /cache nosuid nodev barrier=1 noauto_da_alloc
 
